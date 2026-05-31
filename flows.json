@@ -1,287 +1,83 @@
 [
     {
-        "id": "25d7efa60bb91ef6",
+        "id": "b182cb4497bc3964",
         "type": "tab",
-        "label": "Flux 1",
+        "label": "Station Météo",
         "disabled": false,
-        "info": "",
-        "env": []
+        "info": ""
     },
     {
-        "id": "05304544435522bd",
-        "type": "ui_base",
-        "theme": {
-            "name": "theme-light",
-            "lightTheme": {
-                "default": "#0094CE",
-                "baseColor": "#0094CE",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
-                "edited": true,
-                "reset": false
-            },
-            "darkTheme": {
-                "default": "#097479",
-                "baseColor": "#097479",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
-                "edited": false
-            },
-            "customTheme": {
-                "name": "Untitled Theme 1",
-                "default": "#4B7930",
-                "baseColor": "#4B7930",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
-            },
-            "themeState": {
-                "base-color": {
-                    "default": "#0094CE",
-                    "value": "#0094CE",
-                    "edited": false
-                },
-                "page-titlebar-backgroundColor": {
-                    "value": "#0094CE",
-                    "edited": false
-                },
-                "page-backgroundColor": {
-                    "value": "#fafafa",
-                    "edited": false
-                },
-                "page-sidebar-backgroundColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "group-textColor": {
-                    "value": "#1bbfff",
-                    "edited": false
-                },
-                "group-borderColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "group-backgroundColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "widget-textColor": {
-                    "value": "#111111",
-                    "edited": false
-                },
-                "widget-backgroundColor": {
-                    "value": "#0094ce",
-                    "edited": false
-                },
-                "widget-borderColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "base-font": {
-                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
-                }
-            },
-            "angularTheme": {
-                "primary": "indigo",
-                "accents": "blue",
-                "warn": "red",
-                "background": "grey",
-                "palette": "light"
-            }
-        },
-        "site": {
-            "name": "Node-RED Dashboard",
-            "hideToolbar": "false",
-            "allowSwipe": "false",
-            "lockMenu": "false",
-            "allowTempTheme": "true",
-            "dateFormat": "DD/MM/YYYY",
-            "sizes": {
-                "sx": 48,
-                "sy": 48,
-                "gx": 6,
-                "gy": 6,
-                "cx": 6,
-                "cy": 6,
-                "px": 0,
-                "py": 0
-            }
-        }
-    },
-    {
-        "id": "73e8cd08f61b5a8c",
-        "type": "ui_tab",
-        "name": "Tab 1",
-        "icon": "dashboard",
-        "order": 1
-    },
-    {
-        "id": "13f595c66a526bfd",
-        "type": "ui_group",
-        "name": "Group 1",
-        "tab": "73e8cd08f61b5a8c",
-        "order": 1,
-        "disp": true,
-        "width": 6
-    },
-    {
-        "id": "459921c0ed64cb30",
+        "id": "e700a12e84c98a31",
         "type": "http in",
-        "z": "25d7efa60bb91ef6",
+        "z": "b182cb4497bc3964",
         "name": "Réception ESP32",
         "url": "/api/meteo",
         "method": "post",
         "upload": false,
-        "skipBodyParsing": false,
         "swaggerDoc": "",
-        "x": 90,
-        "y": 380,
+        "x": 170,
+        "y": 260,
         "wires": [
             [
-                "5aa616126e9162e2"
+                "c3a9f48d5b2e1a3c"
             ]
         ]
     },
     {
-        "id": "5aa616126e9162e2",
-        "type": "function",
-        "z": "25d7efa60bb91ef6",
-        "name": "function 1",
-        "func": "// 1. On extrait les données brutes envoyées par l'ESP32\n// (On imagine que ton ESP32 envoie un objet comme : { temperature: 22, humidite: 55, pression: 1013, luminosite: 400 })\nlet donnéesRobot = msg.payload;\n\n// 2. On injecte la date pour l'historique du site web\nlet nouvelleMesure = {\n    temperature: donnéesRobot.temperature,\n    humidite: donnéesRobot.humidite,\n    pression: donnéesRobot.pression,\n    luminosite: donnéesRobot.luminosite,\n    date: new Date().toLocaleString(\"fr-FR\")\n};\n\n// 3. Sauvegarde dans l'historique (comme avant)\nlet historique = global.get(\"historique\") || [];\nhistorique.unshift(nouvelleMesure);\nif (historique.length > 100) { historique.pop(); }\nglobal.set(\"historique\", historique);\n\n// Pour le nœud \"http response\" (le premier fil) : on lui répond OK\nlet msgReponse = { payload: { status: \"OK\", message: \"Données reçues !\" } };\n\n// Pour le graphique Température (le deuxième fil) : on n'envoie QUE le chiffre de la température\nlet msgTemp = { payload: donnéesRobot.temperature };\n\n// Pour le graphique Humidité (le troisième fil) : on n'envoie QUE l'humidité\nlet msgHum = { payload: donnéesRobot.humidite };\n\n// Pour le graphique Pression (le quatrième fil) : on n'envoie QUE la pression\nlet msgPres = { payload: donnéesRobot.pression };\n\n// Pour le graphique Luminosité (le cinquième fil) : on n'envoie QUE la luminosité\nlet msgLum = { payload: donnéesRobot.luminosite };\n\n// Node-RED transmet les messages dans l'ordre des sorties :\nreturn [msgReponse, msgTemp, msgHum, msgPres, msgLum];",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 260,
-        "y": 380,
-        "wires": [
-            [
-                "21c982789f5a7c9f",
-                "202f4bb48423ca05",
-                "7c3ab0e329a1ed40",
-                "911e170cf8955155",
-                "c00197e34d6bbd24"
-            ]
-        ]
-    },
-    {
-        "id": "21c982789f5a7c9f",
+        "id": "4b6c321d59f3e01a",
         "type": "http response",
-        "z": "25d7efa60bb91ef6",
-        "name": "",
-        "statusCode": "",
+        "z": "b182cb4497bc3964",
+        "name": "Réponse OK",
+        "statusCode": "200",
         "headers": {},
-        "x": 410,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "13d8ad4462490bc1",
-        "type": "http in",
-        "z": "25d7efa60bb91ef6",
-        "name": "Envoi historique site web",
-        "url": "/api/meteo/historique",
-        "method": "get",
-        "upload": false,
-        "skipBodyParsing": false,
-        "swaggerDoc": "",
-        "x": 110,
-        "y": 480,
-        "wires": [
-            [
-                "e883dfc9553e69fa"
-            ]
-        ]
-    },
-    {
-        "id": "e883dfc9553e69fa",
-        "type": "function",
-        "z": "25d7efa60bb91ef6",
-        "name": "function 2",
-        "func": "// On extrait l'historique de la mémoire globale\nlet historique = global.get(\"historique\") || [];\n\n// On le met dans le message de sortie\nmsg.payload = historique;\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 300,
-        "y": 480,
-        "wires": [
-            [
-                "26e40166c145ad3a"
-            ]
-        ]
-    },
-    {
-        "id": "26e40166c145ad3a",
-        "type": "http response",
-        "z": "25d7efa60bb91ef6",
-        "name": "",
-        "statusCode": "",
-        "headers": {},
-        "x": 430,
-        "y": 480,
-        "wires": []
-    },
-    {
-        "id": "202f4bb48423ca05",
-        "type": "ui_chart",
-        "z": "25d7efa60bb91ef6",
-        "name": "",
-        "group": "13f595c66a526bfd",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "label": "Pression (en hPa)",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": 1,
-        "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "useOneColor": false,
-        "useUTC": false,
-        "colors": [
-            "#1f77b4",
-            "#aec7e8",
-            "#ff7f0e",
-            "#2ca02c",
-            "#98df8a",
-            "#d62728",
-            "#ff9896",
-            "#9467bd",
-            "#c5b0d5"
-        ],
-        "outputs": 1,
-        "useDifferentColor": false,
-        "className": "",
-        "x": 330,
+        "x": 750,
         "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c3a9f48d5b2e1a3c",
+        "type": "function",
+        "z": "b182cb4497bc3964",
+        "name": "Dispatch & Historique",
+        "func": "let donneesRobot = msg.payload;\n\nlet nouvelleMesure = {\n    temperature: donneesRobot.temperature || 0,\n    humidite: donneesRobot.humidite || 0,\n    pression: donneesRobot.pression || 0,\n    luminosite: donneesRobot.luminosite || 0,\n    date: new Date().toLocaleString(\"fr-FR\")\n};\n\nglobal.set(\"mesure_actuelle\", nouvelleMesure);\n\nlet historique = global.get(\"historique\") || [];\nhistorique.unshift(nouvelleMesure);\nif (historique.length > 100) { historique.pop(); }\nglobal.set(\"historique\", historique);\n\nlet msgReponse = { payload: { status: \"OK\", message: \"Données reçues !\" } };\nlet msgTemp = { payload: donneesRobot.temperature };\nlet msgHum = { payload: donneesRobot.humidite };\nlet msgPres = { payload: donneesRobot.pression };\nlet msgLum = { payload: donneesRobot.luminosite };\n\nreturn [msgReponse, msgTemp, msgHum, msgPres, msgLum];",
+        "outputs": 5,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 514,
+        "y": 262,
         "wires": [
-            []
+            [
+                "4b6c321d59f3e01a"
+            ],
+            [
+                "t172a38b4c9e01f2"
+            ],
+            [
+                "h283b49c5d0f12a3"
+            ],
+            [
+                "p394c50d6e1f23b4"
+            ],
+            [
+                "l405d61e7f2f34c5"
+            ]
         ]
     },
     {
-        "id": "7c3ab0e329a1ed40",
+        "id": "t172a38b4c9e01f2",
         "type": "ui_chart",
-        "z": "25d7efa60bb91ef6",
+        "z": "b182cb4497bc3964",
         "name": "",
-        "group": "13f595c66a526bfd",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "label": "Humidité (en %)",
+        "group": "89b52a178bc9d2b2",
+        "order": 1,
+        "width": "6",
+        "height": "4",
+        "label": "Température (°C)",
         "chartType": "line",
         "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -304,28 +100,24 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 320,
-        "y": 80,
+        "x": 774,
+        "y": 202,
         "wires": [
             []
         ]
     },
     {
-        "id": "911e170cf8955155",
+        "id": "h283b49c5d0f12a3",
         "type": "ui_chart",
-        "z": "25d7efa60bb91ef6",
+        "z": "b182cb4497bc3964",
         "name": "",
-        "group": "13f595c66a526bfd",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "label": "Température (en °C)",
+        "group": "89b52a178bc9d2b2",
+        "order": 2,
+        "width": "6",
+        "height": "4",
+        "label": "Humidité (%)",
         "chartType": "line",
         "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -335,11 +127,11 @@
         "useOneColor": false,
         "useUTC": false,
         "colors": [
-            "#1f77b4",
-            "#aec7e8",
-            "#ff7f0e",
             "#2ca02c",
             "#98df8a",
+            "#ff7f0e",
+            "#1f77b4",
+            "#aec7e8",
             "#d62728",
             "#ff9896",
             "#9467bd",
@@ -348,28 +140,24 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 340,
-        "y": 40,
+        "x": 764,
+        "y": 262,
         "wires": [
             []
         ]
     },
     {
-        "id": "c00197e34d6bbd24",
+        "id": "p394c50d6e1f23b4",
         "type": "ui_chart",
-        "z": "25d7efa60bb91ef6",
+        "z": "b182cb4497bc3964",
         "name": "",
-        "group": "13f595c66a526bfd",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "label": "Luminosité (en %)",
+        "group": "89b52a178bc9d2b2",
+        "order": 3,
+        "width": "6",
+        "height": "4",
+        "label": "Pression (hPa)",
         "chartType": "line",
         "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -379,11 +167,11 @@
         "useOneColor": false,
         "useUTC": false,
         "colors": [
+            "#ff7f0e",
+            "#ffbb78",
+            "#2ca02c",
             "#1f77b4",
             "#aec7e8",
-            "#ff7f0e",
-            "#2ca02c",
-            "#98df8a",
             "#d62728",
             "#ff9896",
             "#9467bd",
@@ -392,24 +180,59 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 330,
-        "y": 160,
+        "x": 764,
+        "y": 322,
         "wires": [
             []
         ]
     },
     {
-        "id": "6bf685a333fcf5f0",
+        "id": "l405d61e7f2f34c5",
+        "type": "ui_chart",
+        "z": "b182cb4497bc3964",
+        "name": "",
+        "group": "89b52a178bc9d2b2",
+        "order": 4,
+        "width": "6",
+        "height": "4",
+        "label": "Luminosité (Lux)",
+        "chartType": "line",
+        "legend": "false",
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#9467bd",
+            "#c5b0d5",
+            "#ff7f0e",
+            "#2ca02c",
+            "#1f77b4",
+            "#aec7e8",
+            "#d62728",
+            "#ff9896"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 774,
+        "y": 382,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "i506e72f8g3f45d6",
         "type": "inject",
-        "z": "25d7efa60bb91ef6",
-        "name": "",
+        "z": "b182cb4497bc3964",
+        "name": "Simulateur Robot",
         "props": [
             {
                 "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
             }
         ],
         "repeat": "",
@@ -419,20 +242,125 @@
         "topic": "",
         "payload": "{\"temperature\":24.5,\"humidite\":62,\"pression\":1012,\"luminosite\":350}",
         "payloadType": "json",
-        "x": 90,
-        "y": 320,
+        "x": 120,
+        "y": 180,
         "wires": [
             [
-                "5aa616126e9162e2"
+                "c3a9f48d5b2e1a3c"
             ]
         ]
     },
     {
-        "id": "7a70015b83faf462",
-        "type": "global-config",
-        "env": [],
-        "modules": {
-            "node-red-dashboard": "3.6.6"
-        }
+        "id": "h607f83a9h4f56e7",
+        "type": "http in",
+        "z": "b182cb4497bc3964",
+        "name": "Envoi historique site web",
+        "url": "/api/meteo/historique",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "f708a94b0i5f67f8"
+            ]
+        ]
+    },
+    {
+        "id": "f708a94b0i5f67f8",
+        "type": "function",
+        "z": "b182cb4497bc3964",
+        "name": "Renvoi historique",
+        "func": "msg.payload = global.get(\"historique\") || [];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 544,
+        "y": 522,
+        "wires": [
+            [
+                "r809b05c1j6f78a9"
+            ]
+        ]
+    },
+    {
+        "id": "r809b05c1j6f78a9",
+        "type": "http response",
+        "z": "b182cb4497bc3964",
+        "name": "Envoi JSON",
+        "statusCode": "200",
+        "headers": {},
+        "x": 810,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "http_actuel_in",
+        "type": "http in",
+        "z": "b182cb4497bc3964",
+        "name": "Envoi actuel site web",
+        "url": "/api/meteo/actuel",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 460,
+        "wires": [
+            [
+                "fn_actuel"
+            ]
+        ]
+    },
+    {
+        "id": "fn_actuel",
+        "type": "function",
+        "z": "b182cb4497bc3964",
+        "name": "Renvoi actuel",
+        "func": "// 1. On récupère la donnée dans le global\nlet mesure = global.get(\"mesure_actuelle\");\n\n// 2. On injecte la donnée UNIQUEMENT dans le payload sans toucher au reste du msg\nif (mesure) {\n    msg.payload = mesure;\n} else {\n    msg.payload = { error: \"Aucune donnee en memoire. Cliquez sur le simulateur !\" };\n}\n\n// 3. On renvoie le msg intact\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 460,
+        "wires": [
+            [
+                "resp_actuel"
+            ]
+        ]
+    },
+    {
+        "id": "resp_actuel",
+        "type": "http response",
+        "z": "b182cb4497bc3964",
+        "name": "Envoi JSON",
+        "statusCode": "200",
+        "headers": {},
+        "x": 790,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "89b52a178bc9d2b2",
+        "type": "ui_group",
+        "name": "Graphiques en temps réel",
+        "tab": "e4f8d50b4be10be1",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "e4f8d50b4be10be1",
+        "type": "ui_tab",
+        "name": "Météo Cloud",
+        "icon": "dashboard",
+        "order": 1
     }
 ]
