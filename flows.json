@@ -1,15 +1,15 @@
 [
     {
-        "id": "b182cb4497bc3964",
+        "id": "44a3fd755ef6adb3",
         "type": "tab",
         "label": "Station Météo",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "e700a12e84c98a31",
+        "id": "6b0c7fc553cadbfc",
         "type": "http in",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Réception ESP32",
         "url": "/api/meteo",
         "method": "post",
@@ -19,65 +19,80 @@
         "y": 260,
         "wires": [
             [
-                "c3a9f48d5b2e1a3c"
+                "65f6c4d751fae29c"
             ]
         ]
     },
     {
-        "id": "4b6c321d59f3e01a",
+        "id": "2c258194ac7fc7f3",
         "type": "http response",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Réponse OK",
         "statusCode": "200",
         "headers": {},
-        "x": 750,
-        "y": 120,
+        "x": 670,
+        "y": 60,
         "wires": []
     },
     {
-        "id": "c3a9f48d5b2e1a3c",
+        "id": "65f6c4d751fae29c",
         "type": "function",
-        "z": "b182cb4497bc3964",
-        "name": "Dispatch & Historique",
-        "func": "let donneesRobot = msg.payload;\n\nlet nouvelleMesure = {\n    temperature: donneesRobot.temperature || 0,\n    humidite: donneesRobot.humidite || 0,\n    pression: donneesRobot.pression || 0,\n    luminosite: donneesRobot.luminosite || 0,\n    date: new Date().toLocaleString(\"fr-FR\")\n};\n\nglobal.set(\"mesure_actuelle\", nouvelleMesure);\n\nlet historique = global.get(\"historique\") || [];\nhistorique.unshift(nouvelleMesure);\nif (historique.length > 100) { historique.pop(); }\nglobal.set(\"historique\", historique);\n\nlet msgReponse = { payload: { status: \"OK\", message: \"Données reçues !\" } };\nlet msgTemp = { payload: donneesRobot.temperature };\nlet msgHum = { payload: donneesRobot.humidite };\nlet msgPres = { payload: donneesRobot.pression };\nlet msgLum = { payload: donneesRobot.luminosite };\n\nreturn [msgReponse, msgTemp, msgHum, msgPres, msgLum];",
-        "outputs": 5,
+        "z": "44a3fd755ef6adb3",
+        "name": "Historique et envoi",
+        "func": "let donneesRobot = msg.payload; //récupère les données envoyées\n\nlet nouvelleMesure = {\n    //si les valeurs envoyées ne sont pas trouvables le code écrit un 0 au lieu d'avoir une valeur vide\n    temperature: donneesRobot.temperature || 0,\n    humidite: donneesRobot.humidite || 0,\n    pression: donneesRobot.pression || 0,\n    luminosite: donneesRobot.luminosite || 0,\n    vitesse_m_s: donneesRobot.vitesse_m_s || 0,\n    dirVent: donneesRobot.dirVent || 0,\n    angleVent: donneesRobot.angleVent || 0,\n    pluie_mm: donneesRobot.pluie_mm || 0,\n    //donne la date et l'heure sur le fuseau horaire de paris\n    date: new Date().toLocaleString(\"fr-FR\", { timeZone: \"Europe/Paris\" }) };\n\nglobal.set(\"mesure_actuelle\", nouvelleMesure);//range l'objet nouvelleMesure dans un tiroir de la mémoire globale appelé \"mesure_actuelle\"\n\nlet historique = global.get(\"historique\") || [];//créé une liste vide pour l'historique\nhistorique.unshift(nouvelleMesure);//insère la toute nouvelle mesure tout en haut de la liste\n//si l'historique dépasse 100 lignes, le mot pop() jette automatiquement la mesure la plus vieille pour éviter les problèmes de mémoire\nif (historique.length > 100) { historique.pop(); }\nglobal.set(\"historique\", historique);//range les nouveautés dans la mémoire \n\n//distribue les messages aux sorties correspondantes\nlet msgReponse = { payload: { status: \"OK\", message: \"Données reçues !\" } };\nlet msgTemp = { payload: donneesRobot.temperature };\nlet msgHum = { payload: donneesRobot.humidite };\nlet msgPres = { payload: donneesRobot.pression };\nlet msgLum = { payload: donneesRobot.luminosite };\nlet msgVit = { payload: donneesRobot.vitesse_m_s };\nlet msgDir = { payload: donneesRobot.dirVent };\nlet msgAng = { payload: donneesRobot.angleVent };\nlet msgPlu = { payload: donneesRobot.pluie_mm };\n\nreturn [msgReponse, msgTemp, msgHum, msgPres, msgLum, msgVit, msgDir, msgAng, msgPlu];",
+        "outputs": 9,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 514,
+        "x": 504,
         "y": 262,
         "wires": [
             [
-                "4b6c321d59f3e01a"
+                "2c258194ac7fc7f3"
             ],
             [
-                "t172a38b4c9e01f2"
+                "18dd0709704868c4"
             ],
             [
-                "h283b49c5d0f12a3"
+                "272f9e8331493610"
             ],
             [
-                "p394c50d6e1f23b4"
+                "ca2fd06fbb4460ef"
             ],
             [
-                "l405d61e7f2f34c5"
+                "78f0e021407e3bf1"
+            ],
+            [
+                "6bed36a37d94c657"
+            ],
+            [
+                "e376b1075b102fc0"
+            ],
+            [
+                "60605bd3ec20982c"
+            ],
+            [
+                "6ddd3f7247b95394"
             ]
         ]
     },
     {
-        "id": "t172a38b4c9e01f2",
+        "id": "18dd0709704868c4",
         "type": "ui_chart",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "",
-        "group": "89b52a178bc9d2b2",
+        "group": "ea52905c50cdee8b",
         "order": 1,
         "width": "6",
         "height": "4",
         "label": "Température (°C)",
         "chartType": "line",
         "legend": "false",
+        "xformat": "HH:mm:ss",
+        "nodata": "",
+        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -100,24 +115,27 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 774,
-        "y": 202,
+        "x": 870,
+        "y": 140,
         "wires": [
             []
         ]
     },
     {
-        "id": "h283b49c5d0f12a3",
+        "id": "272f9e8331493610",
         "type": "ui_chart",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "",
-        "group": "89b52a178bc9d2b2",
+        "group": "0ac4e1ee8afd2257",
         "order": 2,
         "width": "6",
         "height": "4",
         "label": "Humidité (%)",
         "chartType": "line",
         "legend": "false",
+        "xformat": "HH:mm:ss",
+        "nodata": "",
+        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -140,24 +158,27 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 764,
-        "y": 262,
+        "x": 850,
+        "y": 180,
         "wires": [
             []
         ]
     },
     {
-        "id": "p394c50d6e1f23b4",
+        "id": "ca2fd06fbb4460ef",
         "type": "ui_chart",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "",
-        "group": "89b52a178bc9d2b2",
+        "group": "9564769330f633aa",
         "order": 3,
         "width": "6",
         "height": "4",
         "label": "Pression (hPa)",
         "chartType": "line",
         "legend": "false",
+        "xformat": "HH:mm:ss",
+        "nodata": "",
+        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -180,16 +201,16 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 764,
-        "y": 322,
+        "x": 860,
+        "y": 220,
         "wires": [
             []
         ]
     },
     {
-        "id": "l405d61e7f2f34c5",
+        "id": "78f0e021407e3bf1",
         "type": "ui_chart",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "",
         "group": "89b52a178bc9d2b2",
         "order": 4,
@@ -198,6 +219,9 @@
         "label": "Luminosité (Lux)",
         "chartType": "line",
         "legend": "false",
+        "xformat": "HH:mm:ss",
+        "nodata": "",
+        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -214,21 +238,22 @@
             "#1f77b4",
             "#aec7e8",
             "#d62728",
-            "#ff9896"
+            "#ff9896",
+            "#000000"
         ],
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 774,
-        "y": 382,
+        "x": 870,
+        "y": 260,
         "wires": [
             []
         ]
     },
     {
-        "id": "i506e72f8g3f45d6",
+        "id": "b204a0e13538972e",
         "type": "inject",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Simulateur Robot",
         "props": [
             {
@@ -240,20 +265,20 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"temperature\":24.5,\"humidite\":62,\"pression\":1012,\"luminosite\":350}",
+        "payload": "{\"temperature\":24.5,\"humidite\":62,\"pression\":1012,\"luminosite\":350,\"vitesse_m_s\":242,\"dirVent\":3456,\"angleVent\":4567,\"pluie_mm\":3456}",
         "payloadType": "json",
         "x": 120,
         "y": 180,
         "wires": [
             [
-                "c3a9f48d5b2e1a3c"
+                "65f6c4d751fae29c"
             ]
         ]
     },
     {
-        "id": "h607f83a9h4f56e7",
+        "id": "f69c3920466d2a38",
         "type": "http in",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Envoi historique site web",
         "url": "/api/meteo/historique",
         "method": "get",
@@ -263,45 +288,45 @@
         "y": 520,
         "wires": [
             [
-                "f708a94b0i5f67f8"
+                "59ca6e5d3f4c5b71"
             ]
         ]
     },
     {
-        "id": "f708a94b0i5f67f8",
+        "id": "59ca6e5d3f4c5b71",
         "type": "function",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Renvoi historique",
-        "func": "msg.payload = global.get(\"historique\") || [];\nreturn msg;",
+        "func": "//récupère en mémoire les données de l'historique et les envoie\nmsg.payload = global.get(\"historique\") || [];\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 544,
-        "y": 522,
+        "x": 550,
+        "y": 520,
         "wires": [
             [
-                "r809b05c1j6f78a9"
+                "2334785308b86df9"
             ]
         ]
     },
     {
-        "id": "r809b05c1j6f78a9",
+        "id": "2334785308b86df9",
         "type": "http response",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Envoi JSON",
         "statusCode": "200",
         "headers": {},
-        "x": 810,
+        "x": 790,
         "y": 520,
         "wires": []
     },
     {
-        "id": "http_actuel_in",
+        "id": "9d275e12e2ee4736",
         "type": "http in",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Envoi actuel site web",
         "url": "/api/meteo/actuel",
         "method": "get",
@@ -311,16 +336,16 @@
         "y": 460,
         "wires": [
             [
-                "fn_actuel"
+                "6c7167e2ed32a757"
             ]
         ]
     },
     {
-        "id": "fn_actuel",
+        "id": "6c7167e2ed32a757",
         "type": "function",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Renvoi actuel",
-        "func": "// 1. On récupère la donnée dans le global\nlet mesure = global.get(\"mesure_actuelle\");\n\n// 2. On injecte la donnée UNIQUEMENT dans le payload sans toucher au reste du msg\nif (mesure) {\n    msg.payload = mesure;\n} else {\n    msg.payload = { error: \"Aucune donnee en memoire. Cliquez sur le simulateur !\" };\n}\n\n// 3. On renvoie le msg intact\nreturn msg;",
+        "func": "//récupère la donnée dans le global\nlet mesure = global.get(\"mesure_actuelle\");\n\n//verifie si le message est vide ou non et l'envoie dans le second cas\nif (mesure) {\n    msg.payload = mesure;\n} else {\n    msg.payload = { error: \"Aucune donnee en memoire. Cliquez sur le simulateur !\" };\n}\n\n//renvoie le msg intact\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -331,14 +356,14 @@
         "y": 460,
         "wires": [
             [
-                "resp_actuel"
+                "c2f9a89e47b11b3f"
             ]
         ]
     },
     {
-        "id": "resp_actuel",
+        "id": "c2f9a89e47b11b3f",
         "type": "http response",
-        "z": "b182cb4497bc3964",
+        "z": "44a3fd755ef6adb3",
         "name": "Envoi JSON",
         "statusCode": "200",
         "headers": {},
@@ -347,20 +372,891 @@
         "wires": []
     },
     {
-        "id": "89b52a178bc9d2b2",
+        "id": "71ba64177e7d60a0",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "température",
+        "url": "/api/meteo/historique/temperature",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 600,
+        "wires": [
+            [
+                "a2efe9a07b75f115"
+            ]
+        ]
+    },
+    {
+        "id": "afc876e90e387f72",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "humidité",
+        "url": "/api/meteo/historique/humidite",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 660,
+        "wires": [
+            [
+                "022530a56ac463b8"
+            ]
+        ]
+    },
+    {
+        "id": "ee480674d401a9bc",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "pression",
+        "url": "/api/meteo/historique/pression",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 720,
+        "wires": [
+            [
+                "af1e107ff9c1468e"
+            ]
+        ]
+    },
+    {
+        "id": "c592e2e3174e6582",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "luminiosité",
+        "url": "/api/meteo/historique/luminosite",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 780,
+        "wires": [
+            [
+                "ad4498a0300aa803"
+            ]
+        ]
+    },
+    {
+        "id": "bb3d3919aaf82535",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 550,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "26aa79d13a60dd31",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 550,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "d33ad518fc2e5607",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 550,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "4e9c67f410b7a890",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 550,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "a2efe9a07b75f115",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 1",
+        "func": "let entier = global.get(\"historique\") || [];\n// On extrait uniquement la valeur et la date pour alléger le site\nmsg.payload = entier.map(d => ({ valeur: d.temperature, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 600,
+        "wires": [
+            [
+                "bb3d3919aaf82535"
+            ]
+        ]
+    },
+    {
+        "id": "022530a56ac463b8",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 2",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.humidite, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 660,
+        "wires": [
+            [
+                "26aa79d13a60dd31"
+            ]
+        ]
+    },
+    {
+        "id": "af1e107ff9c1468e",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 3",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.pression, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 720,
+        "wires": [
+            [
+                "d33ad518fc2e5607"
+            ]
+        ]
+    },
+    {
+        "id": "ad4498a0300aa803",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 4",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.luminosite, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 780,
+        "wires": [
+            [
+                "4e9c67f410b7a890"
+            ]
+        ]
+    },
+    {
+        "id": "6bed36a37d94c657",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "52e0b416cb22e9a3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Vitesse vent",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 850,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e376b1075b102fc0",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "97dca84a58bf821a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Direction vent",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 860,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "60605bd3ec20982c",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "e0160b65db64aa5c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Qté de pluie",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 850,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ddd3f7247b95394",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "0af381f5ab9a68fe",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Angle du vent",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 860,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "113d5b06c36b5d51",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "vitesse vent",
+        "url": "/api/meteo/historique/vitesse_m_s",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 840,
+        "wires": [
+            [
+                "933c010b3720509a"
+            ]
+        ]
+    },
+    {
+        "id": "a44924f6b71fea9b",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "direction vent",
+        "url": "/api/meteo/historique/dirVent",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 880,
+        "wires": [
+            [
+                "2bafa8e7c714d08d"
+            ]
+        ]
+    },
+    {
+        "id": "745b920aa841f99b",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "quantité de pluie",
+        "url": "/api/meteo/historique/pluie_mm",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 940,
+        "wires": [
+            [
+                "52a35da64eb8aa59"
+            ]
+        ]
+    },
+    {
+        "id": "a1411c53abd14a2b",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "angle du vent",
+        "url": "/api/meteo/historique/angleVent",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 1000,
+        "wires": [
+            [
+                "81e4fd1119c2ba62"
+            ]
+        ]
+    },
+    {
+        "id": "933c010b3720509a",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 5",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.vitesse_m_s, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 840,
+        "wires": [
+            [
+                "861410e0b52cc668"
+            ]
+        ]
+    },
+    {
+        "id": "2bafa8e7c714d08d",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 6",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.dirVent, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 880,
+        "wires": [
+            [
+                "cf5545a5859eeb08"
+            ]
+        ]
+    },
+    {
+        "id": "52a35da64eb8aa59",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 7",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.pluie_mm, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 940,
+        "wires": [
+            [
+                "ca03dbb54eb01aff"
+            ]
+        ]
+    },
+    {
+        "id": "81e4fd1119c2ba62",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 8",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.angleVent, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 1000,
+        "wires": [
+            [
+                "2124a7405fd97724"
+            ]
+        ]
+    },
+    {
+        "id": "861410e0b52cc668",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 570,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "cf5545a5859eeb08",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 570,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "ca03dbb54eb01aff",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 570,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "2124a7405fd97724",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 570,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "dc39e2c7b07d6ab2",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "9564769330f633aa",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9be9011b50966862",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "0ac4e1ee8afd2257",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bafd7746d7935dd5",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "ea52905c50cdee8b",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fe44bfc01f8d9e26",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "89b52a178bc9d2b2",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "901621aea65eed53",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "52e0b416cb22e9a3",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "108704be726c856a",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "97dca84a58bf821a",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4f6b73b5796b5fd3",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "e0160b65db64aa5c",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8caf3642e9d6754d",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "0af381f5ab9a68fe",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    /* Supprime définitivement la barre bleue du haut */\n    md-toolbar {\n        display: none !important;\n    }\n    /* Supprime définitivement le menu blanc de gauche */\n    md-sidenav, .md-sidenav-left {\n        display: none !important;\n    }\n    /* Force le graphique à occuper tout l'écran proprement */\n    md-content {\n        margin-left: 0 !important;\n        padding: 0 !important;\n    }\n    .ui-layout-row {\n        height: 100vh !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ea52905c50cdee8b",
         "type": "ui_group",
-        "name": "Graphiques en temps réel",
-        "tab": "e4f8d50b4be10be1",
+        "name": "Temperature",
+        "tab": "521c1a0ba38edf8a",
         "order": 1,
         "disp": true,
         "width": "6",
-        "collapse": false
+        "collapse": false,
+        "className": ""
     },
     {
-        "id": "e4f8d50b4be10be1",
+        "id": "0ac4e1ee8afd2257",
+        "type": "ui_group",
+        "name": "Humidite",
+        "tab": "60bb1a43d55137f3",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "9564769330f633aa",
+        "type": "ui_group",
+        "name": "Pression",
+        "tab": "05d8792e9bcce84d",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "89b52a178bc9d2b2",
+        "type": "ui_group",
+        "name": "Luminosite",
+        "tab": "8e1eccbb3e9dc63f",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "52e0b416cb22e9a3",
+        "type": "ui_group",
+        "name": "Vitesse vent",
+        "tab": "b91059cc4c4beb06",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "97dca84a58bf821a",
+        "type": "ui_group",
+        "name": "Direction vent ",
+        "tab": "b83e6a231b04f1df",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e0160b65db64aa5c",
+        "type": "ui_group",
+        "name": "Qté de pluie",
+        "tab": "7e736ccb8a66290a",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0af381f5ab9a68fe",
+        "type": "ui_group",
+        "name": "Angle du vent",
+        "tab": "07d0180d09cd8519",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "521c1a0ba38edf8a",
         "type": "ui_tab",
-        "name": "Météo Cloud",
+        "name": "Temperature",
         "icon": "dashboard",
-        "order": 1
+        "order": 5,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "60bb1a43d55137f3",
+        "type": "ui_tab",
+        "name": "Humidité",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "05d8792e9bcce84d",
+        "type": "ui_tab",
+        "name": "Pression",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "8e1eccbb3e9dc63f",
+        "type": "ui_tab",
+        "name": "Luminiosité",
+        "icon": "dashboard",
+        "order": 4,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "b91059cc4c4beb06",
+        "type": "ui_tab",
+        "name": "Vitesse vent",
+        "icon": "dashboard",
+        "order": 5,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "b83e6a231b04f1df",
+        "type": "ui_tab",
+        "name": "Direction vent",
+        "icon": "dashboard",
+        "order": 6,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "7e736ccb8a66290a",
+        "type": "ui_tab",
+        "name": "Qté de pluie",
+        "icon": "dashboard",
+        "order": 7,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "07d0180d09cd8519",
+        "type": "ui_tab",
+        "name": "Angle du vent",
+        "icon": "dashboard",
+        "order": 8,
+        "disabled": false,
+        "hidden": false
     }
 ]
