@@ -15,11 +15,11 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 170,
+        "x": 90,
         "y": 260,
         "wires": [
             [
-                "65f6c4d751fae29c"
+                "18104ac1f43df7b2"
             ]
         ]
     },
@@ -270,9 +270,7 @@
         "x": 120,
         "y": 180,
         "wires": [
-            [
-                "65f6c4d751fae29c"
-            ]
+            []
         ]
     },
     {
@@ -1098,6 +1096,40 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "18104ac1f43df7b2",
+        "type": "json",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "65f6c4d751fae29c",
+                "84c2a4dc70076aa0"
+            ]
+        ]
+    },
+    {
+        "id": "84c2a4dc70076aa0",
+        "type": "debug",
+        "z": "44a3fd755ef6adb3",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 320,
+        "y": 120,
+        "wires": []
     },
     {
         "id": "ea52905c50cdee8b",
