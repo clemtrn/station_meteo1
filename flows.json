@@ -39,8 +39,8 @@
         "type": "function",
         "z": "44a3fd755ef6adb3",
         "name": "Historique et envoi",
-        "func": "let donneesRobot = msg.payload; //récupère les données envoyées\n\nlet nouvelleMesure = {\n    //si les valeurs envoyées ne sont pas trouvables le code écrit un 0 au lieu d'avoir une valeur vide\n    temperature: donneesRobot.temperature || 0,\n    humidite: donneesRobot.humidite || 0,\n    pression: donneesRobot.pression || 0,\n    luminosite: donneesRobot.luminosite || 0,\n    vitesse_m_s: donneesRobot.vitesse_m_s || 0,\n    dirVent: donneesRobot.dirVent || 0,\n    angleVent: donneesRobot.angleVent || 0,\n    pluie_mm: donneesRobot.pluie_mm || 0,\n    //donne la date et l'heure sur le fuseau horaire de paris\n    date: new Date().toLocaleString(\"fr-FR\", { timeZone: \"Europe/Paris\" }) };\n\nglobal.set(\"mesure_actuelle\", nouvelleMesure);//range l'objet nouvelleMesure dans un tiroir de la mémoire globale appelé \"mesure_actuelle\"\n\nlet historique = global.get(\"historique\") || [];//créé une liste vide pour l'historique\nhistorique.unshift(nouvelleMesure);//insère la toute nouvelle mesure tout en haut de la liste\n//si l'historique dépasse 100 lignes, le mot pop() jette automatiquement la mesure la plus vieille pour éviter les problèmes de mémoire\nif (historique.length > 100) { historique.pop(); }\nglobal.set(\"historique\", historique);//range les nouveautés dans la mémoire \n\n//distribue les messages aux sorties correspondantes\nlet msgReponse = { payload: { status: \"OK\", message: \"Données reçues !\" } };\nlet msgTemp = { payload: donneesRobot.temperature };\nlet msgHum = { payload: donneesRobot.humidite };\nlet msgPres = { payload: donneesRobot.pression };\nlet msgLum = { payload: donneesRobot.luminosite };\nlet msgVit = { payload: donneesRobot.vitesse_m_s };\nlet msgDir = { payload: donneesRobot.dirVent };\nlet msgAng = { payload: donneesRobot.angleVent };\nlet msgPlu = { payload: donneesRobot.pluie_mm };\n\nreturn [msgReponse, msgTemp, msgHum, msgPres, msgLum, msgVit, msgDir, msgAng, msgPlu];",
-        "outputs": 9,
+        "func": "let donneesRobot = msg.payload; //récupère les données envoyées\n\nlet nouvelleMesure = {\n    //si les valeurs envoyées ne sont pas trouvables le code écrit un 0 au lieu d'avoir une valeur vide\n    temperature: donneesRobot.temperature || 0,\n    humidite: donneesRobot.humidite || 0,\n    pression: donneesRobot.pression || 0,\n    luminosite: donneesRobot.luminosite || 0,\n    vitesse_m_s: donneesRobot.vitesse_m_s || 0,\n    dirVent: donneesRobot.dirVent || 0,\n    angleVent: donneesRobot.angleVent || 0,\n    pluie_mm: donneesRobot.pluie_mm || 0,\n    lng: donneesRobot.lng || 0,\n    alt: donneesRobot.alt || 0,\n    lat: donneesRobot.lat || 0,\n    speed: donneesRobot.speed || 0,\n    //donne la date et l'heure sur le fuseau horaire de paris\n    date: new Date().toLocaleString(\"fr-FR\", { timeZone: \"Europe/Paris\" }) };\n\nglobal.set(\"mesure_actuelle\", nouvelleMesure);//range l'objet nouvelleMesure dans un tiroir de la mémoire globale appelé \"mesure_actuelle\"\n\nlet historique = global.get(\"historique\") || [];//créé une liste vide pour l'historique\nhistorique.unshift(nouvelleMesure);//insère la toute nouvelle mesure tout en haut de la liste\n//si l'historique dépasse 100 lignes, le mot pop() jette automatiquement la mesure la plus vieille pour éviter les problèmes de mémoire\nif (historique.length > 100) { historique.pop(); }\nglobal.set(\"historique\", historique);//range les nouveautés dans la mémoire \n\nlet msgReponse = msg; \nmsgReponse.payload = { status: \"OK\", message: \"Données reçues !\" };\n//distribue les messages aux sorties correspondantes\nlet msgTemp = { payload: donneesRobot.temperature };\nlet msgHum = { payload: donneesRobot.humidite };\nlet msgPres = { payload: donneesRobot.pression };\nlet msgLum = { payload: donneesRobot.luminosite };\nlet msgVit = { payload: donneesRobot.vitesse_m_s };\nlet msgDir = { payload: donneesRobot.dirVent };\nlet msgAng = { payload: donneesRobot.angleVent };\nlet msgPlu = { payload: donneesRobot.pluie_mm };\nlet msgAlt = { payload: donneesRobot.alt };\nlet msgLng = { payload: donneesRobot.lng };\nlet msgLat = { payload: donneesRobot.lat };\nlet msgSpeed = { payload: donneesRobot.speed };\n\n\n\n\nreturn [msgReponse, msgTemp, msgHum, msgPres, msgLum, msgVit, msgDir, msgAng, msgPlu, msgSpeed, msgAlt, msgLng, msgLat];",
+        "outputs": 13,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
@@ -75,6 +75,18 @@
             ],
             [
                 "6ddd3f7247b95394"
+            ],
+            [
+                "f9d0e40ae19ffd45"
+            ],
+            [
+                "b4071033d663187f"
+            ],
+            [
+                "313a3b2753e0c85b"
+            ],
+            [
+                "f17f8e5a3973f24a"
             ]
         ]
     },
@@ -83,7 +95,7 @@
         "type": "ui_chart",
         "z": "44a3fd755ef6adb3",
         "name": "",
-        "group": "ea52905c50cdee8b",
+        "group": "0c26a3fa4e86c336",
         "order": 1,
         "width": "6",
         "height": "4",
@@ -116,7 +128,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 870,
-        "y": 140,
+        "y": 60,
         "wires": [
             []
         ]
@@ -159,7 +171,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 850,
-        "y": 180,
+        "y": 100,
         "wires": [
             []
         ]
@@ -202,7 +214,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 860,
-        "y": 220,
+        "y": 140,
         "wires": [
             []
         ]
@@ -245,7 +257,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 870,
-        "y": 260,
+        "y": 180,
         "wires": [
             []
         ]
@@ -265,12 +277,14 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"temperature\":24.5,\"humidite\":62,\"pression\":1012,\"luminosite\":350,\"vitesse_m_s\":242,\"dirVent\":3456,\"angleVent\":4567,\"pluie_mm\":3456}",
+        "payload": "{\"temperature\":24.5,\"humidite\":62,\"pression\":1012,\"luminosite\":350,\"vitesse_m_s\":242,\"dirVent\":3456,\"angleVent\":4567,\"pluie_mm\":3456,\"lng\":456,\"lat\":4567,\"alt\":456,\"speed\":4567}",
         "payloadType": "json",
         "x": 120,
         "y": 180,
         "wires": [
-            []
+            [
+                "65f6c4d751fae29c"
+            ]
         ]
     },
     {
@@ -282,8 +296,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 270,
-        "y": 520,
+        "x": 290,
+        "y": 680,
         "wires": [
             [
                 "59ca6e5d3f4c5b71"
@@ -302,8 +316,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 550,
-        "y": 520,
+        "x": 570,
+        "y": 680,
         "wires": [
             [
                 "2334785308b86df9"
@@ -317,8 +331,8 @@
         "name": "Envoi JSON",
         "statusCode": "200",
         "headers": {},
-        "x": 790,
-        "y": 520,
+        "x": 810,
+        "y": 680,
         "wires": []
     },
     {
@@ -330,8 +344,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 260,
-        "y": 460,
+        "x": 280,
+        "y": 620,
         "wires": [
             [
                 "6c7167e2ed32a757"
@@ -350,8 +364,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 460,
+        "x": 560,
+        "y": 620,
         "wires": [
             [
                 "c2f9a89e47b11b3f"
@@ -365,8 +379,8 @@
         "name": "Envoi JSON",
         "statusCode": "200",
         "headers": {},
-        "x": 790,
-        "y": 460,
+        "x": 810,
+        "y": 620,
         "wires": []
     },
     {
@@ -378,8 +392,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 270,
-        "y": 600,
+        "x": 170,
+        "y": 760,
         "wires": [
             [
                 "a2efe9a07b75f115"
@@ -395,8 +409,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 260,
-        "y": 660,
+        "x": 160,
+        "y": 820,
         "wires": [
             [
                 "022530a56ac463b8"
@@ -412,8 +426,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 260,
-        "y": 720,
+        "x": 160,
+        "y": 900,
         "wires": [
             [
                 "af1e107ff9c1468e"
@@ -429,8 +443,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 260,
-        "y": 780,
+        "x": 160,
+        "y": 960,
         "wires": [
             [
                 "ad4498a0300aa803"
@@ -444,8 +458,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 550,
-        "y": 600,
+        "x": 450,
+        "y": 760,
         "wires": []
     },
     {
@@ -455,8 +469,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 550,
-        "y": 660,
+        "x": 450,
+        "y": 820,
         "wires": []
     },
     {
@@ -466,8 +480,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 550,
-        "y": 720,
+        "x": 450,
+        "y": 900,
         "wires": []
     },
     {
@@ -477,8 +491,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 550,
-        "y": 780,
+        "x": 450,
+        "y": 960,
         "wires": []
     },
     {
@@ -493,8 +507,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 600,
+        "x": 320,
+        "y": 760,
         "wires": [
             [
                 "bb3d3919aaf82535"
@@ -513,8 +527,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 660,
+        "x": 320,
+        "y": 820,
         "wires": [
             [
                 "26aa79d13a60dd31"
@@ -533,8 +547,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 720,
+        "x": 320,
+        "y": 900,
         "wires": [
             [
                 "d33ad518fc2e5607"
@@ -553,8 +567,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 780,
+        "x": 320,
+        "y": 960,
         "wires": [
             [
                 "4e9c67f410b7a890"
@@ -600,7 +614,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 850,
-        "y": 300,
+        "y": 220,
         "wires": [
             []
         ]
@@ -644,7 +658,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 860,
-        "y": 340,
+        "y": 260,
         "wires": [
             []
         ]
@@ -688,7 +702,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 850,
-        "y": 380,
+        "y": 300,
         "wires": [
             []
         ]
@@ -732,7 +746,7 @@
         "useDifferentColor": false,
         "className": "",
         "x": 860,
-        "y": 420,
+        "y": 340,
         "wires": [
             []
         ]
@@ -746,8 +760,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 270,
-        "y": 840,
+        "x": 170,
+        "y": 1020,
         "wires": [
             [
                 "933c010b3720509a"
@@ -763,8 +777,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 270,
-        "y": 880,
+        "x": 170,
+        "y": 1060,
         "wires": [
             [
                 "2bafa8e7c714d08d"
@@ -780,8 +794,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 260,
-        "y": 940,
+        "x": 700,
+        "y": 760,
         "wires": [
             [
                 "52a35da64eb8aa59"
@@ -797,8 +811,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 270,
-        "y": 1000,
+        "x": 710,
+        "y": 820,
         "wires": [
             [
                 "81e4fd1119c2ba62"
@@ -817,8 +831,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 840,
+        "x": 320,
+        "y": 1020,
         "wires": [
             [
                 "861410e0b52cc668"
@@ -837,8 +851,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 880,
+        "x": 320,
+        "y": 1060,
         "wires": [
             [
                 "cf5545a5859eeb08"
@@ -857,8 +871,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 940,
+        "x": 860,
+        "y": 760,
         "wires": [
             [
                 "ca03dbb54eb01aff"
@@ -877,8 +891,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 1000,
+        "x": 860,
+        "y": 820,
         "wires": [
             [
                 "2124a7405fd97724"
@@ -892,8 +906,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 570,
-        "y": 840,
+        "x": 470,
+        "y": 1020,
         "wires": []
     },
     {
@@ -903,8 +917,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 570,
-        "y": 880,
+        "x": 470,
+        "y": 1060,
         "wires": []
     },
     {
@@ -914,8 +928,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 570,
-        "y": 940,
+        "x": 1010,
+        "y": 760,
         "wires": []
     },
     {
@@ -925,8 +939,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 570,
-        "y": 1000,
+        "x": 1010,
+        "y": 820,
         "wires": []
     },
     {
@@ -1132,7 +1146,459 @@
         "wires": []
     },
     {
-        "id": "ea52905c50cdee8b",
+        "id": "f9d0e40ae19ffd45",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "426c405d4224e307",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Longitude",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 840,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9808569d49e0827d",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "longitude",
+        "url": "/api/meteo/historique/lng",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 720,
+        "y": 880,
+        "wires": [
+            [
+                "5629c80d40d9ab34"
+            ]
+        ]
+    },
+    {
+        "id": "f17f8e5a3973f24a",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "ab2a7575038b6e70",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Latitude",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 620,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "313a3b2753e0c85b",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "59f8bafe7efa529d",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Altitude",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 760,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b4071033d663187f",
+        "type": "ui_chart",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "group": "ea52905c50cdee8b",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Vitesse robot",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 830,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1286837924ef6e74",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "latitude",
+        "url": "/api/meteo/historique/latitude",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 710,
+        "y": 920,
+        "wires": [
+            [
+                "fae817d822153ccf"
+            ]
+        ]
+    },
+    {
+        "id": "350f0f8436695e0b",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "altitude",
+        "url": "/api/meteo/historique/altitude",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 710,
+        "y": 960,
+        "wires": [
+            [
+                "24f978bf52f56e99"
+            ]
+        ]
+    },
+    {
+        "id": "a88da647d06c2b67",
+        "type": "http in",
+        "z": "44a3fd755ef6adb3",
+        "name": "vitesse robot",
+        "url": "/api/meteo/historique/speed",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 730,
+        "y": 1020,
+        "wires": [
+            [
+                "200cba7f9c8c6f6a"
+            ]
+        ]
+    },
+    {
+        "id": "5629c80d40d9ab34",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 9",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.lng, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 880,
+        "wires": [
+            [
+                "9ccc7e67c9f13dec"
+            ]
+        ]
+    },
+    {
+        "id": "fae817d822153ccf",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 10",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.lat, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 920,
+        "wires": [
+            [
+                "5291def9647f9d6a"
+            ]
+        ]
+    },
+    {
+        "id": "24f978bf52f56e99",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 11",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.alt, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 960,
+        "wires": [
+            [
+                "8e32235740f526db"
+            ]
+        ]
+    },
+    {
+        "id": "200cba7f9c8c6f6a",
+        "type": "function",
+        "z": "44a3fd755ef6adb3",
+        "name": "function 12",
+        "func": "let entier = global.get(\"historique\") || [];\nmsg.payload = entier.map(d => ({ valeur: d.speed, date: d.date }));\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 1020,
+        "wires": [
+            [
+                "9c402f0090af8db7"
+            ]
+        ]
+    },
+    {
+        "id": "9ccc7e67c9f13dec",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1010,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "5291def9647f9d6a",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1010,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "8e32235740f526db",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1010,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "9c402f0090af8db7",
+        "type": "http response",
+        "z": "44a3fd755ef6adb3",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1050,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "08a82f1542e0dd79",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "426c405d4224e307",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1140,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e78cec579c65925c",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "ea52905c50cdee8b",
+        "name": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1120,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "39531ff1f6c7ba19",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "59f8bafe7efa529d",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1100,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6dc93fbadfca182",
+        "type": "ui_template",
+        "z": "44a3fd755ef6adb3",
+        "group": "ab2a7575038b6e70",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1020,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0c26a3fa4e86c336",
         "type": "ui_group",
         "name": "Temperature",
         "tab": "521c1a0ba38edf8a",
@@ -1145,7 +1611,7 @@
     {
         "id": "0ac4e1ee8afd2257",
         "type": "ui_group",
-        "name": "Humidite",
+        "name": "Humidité",
         "tab": "60bb1a43d55137f3",
         "order": 1,
         "disp": true,
@@ -1167,7 +1633,7 @@
     {
         "id": "89b52a178bc9d2b2",
         "type": "ui_group",
-        "name": "Luminosite",
+        "name": "Luminosité",
         "tab": "8e1eccbb3e9dc63f",
         "order": 1,
         "disp": true,
@@ -1213,6 +1679,50 @@
         "type": "ui_group",
         "name": "Angle du vent",
         "tab": "07d0180d09cd8519",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ea52905c50cdee8b",
+        "type": "ui_group",
+        "name": "Vitesse robot",
+        "tab": "6539a4d09d12c20c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "426c405d4224e307",
+        "type": "ui_group",
+        "name": "Longitude",
+        "tab": "cb4668d53bab6135",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ab2a7575038b6e70",
+        "type": "ui_group",
+        "name": "Latitude",
+        "tab": "63144df90a9b51b2",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "59f8bafe7efa529d",
+        "type": "ui_group",
+        "name": "Altitude",
+        "tab": "7acb74b57bc6a6ad",
         "order": 1,
         "disp": true,
         "width": "6",
@@ -1288,6 +1798,42 @@
         "name": "Angle du vent",
         "icon": "dashboard",
         "order": 8,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "6539a4d09d12c20c",
+        "type": "ui_tab",
+        "name": "Vitesse robot",
+        "icon": "dashboard",
+        "order": 12,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "cb4668d53bab6135",
+        "type": "ui_tab",
+        "name": "Longitude",
+        "icon": "dashboard",
+        "order": 9,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "63144df90a9b51b2",
+        "type": "ui_tab",
+        "name": "Latitude",
+        "icon": "dashboard",
+        "order": 10,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "7acb74b57bc6a6ad",
+        "type": "ui_tab",
+        "name": "Altitude",
+        "icon": "dashboard",
+        "order": 11,
         "disabled": false,
         "hidden": false
     }
