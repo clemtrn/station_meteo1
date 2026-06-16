@@ -282,9 +282,7 @@
         "x": 120,
         "y": 180,
         "wires": [
-            [
-                "65f6c4d751fae29c"
-            ]
+            []
         ]
     },
     {
@@ -1603,7 +1601,7 @@
         "name": "Temperature",
         "tab": "521c1a0ba38edf8a",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1614,7 +1612,7 @@
         "name": "Humidité",
         "tab": "60bb1a43d55137f3",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1625,7 +1623,7 @@
         "name": "Pression",
         "tab": "05d8792e9bcce84d",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1636,7 +1634,7 @@
         "name": "Luminosité",
         "tab": "8e1eccbb3e9dc63f",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1647,7 +1645,7 @@
         "name": "Vitesse vent",
         "tab": "b91059cc4c4beb06",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1658,7 +1656,7 @@
         "name": "Direction vent ",
         "tab": "b83e6a231b04f1df",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1669,7 +1667,7 @@
         "name": "Qté de pluie",
         "tab": "7e736ccb8a66290a",
         "order": 2,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1680,7 +1678,7 @@
         "name": "Angle du vent",
         "tab": "07d0180d09cd8519",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1691,7 +1689,7 @@
         "name": "Vitesse robot",
         "tab": "6539a4d09d12c20c",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1702,7 +1700,7 @@
         "name": "Longitude",
         "tab": "cb4668d53bab6135",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1713,7 +1711,7 @@
         "name": "Latitude",
         "tab": "63144df90a9b51b2",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
@@ -1724,7 +1722,7 @@
         "name": "Altitude",
         "tab": "7acb74b57bc6a6ad",
         "order": 1,
-        "disp": true,
+        "disp": false,
         "width": "6",
         "collapse": false,
         "className": ""
