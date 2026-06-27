@@ -1,7 +1,7 @@
 Météo Xplorer
 
 Version -- Juin 2026
-Autheur -- Clémentine TRANNOY
+Auteur -- Clémentine TRANNOY
 Projet -- D2iP02 : Habib TALL, Jawaher TALL, Rémi TESSE, Clémentine TRANNOY, William SOUCHARD, Marguerite BLONDET
 
 Ce dépôt contient la configuration et le code du serveur de la station météo connectée mobile MeteoXplorer. Ce serveur fait le pont entre l'ESP32 (acquisition) et le site web (visualisation).
@@ -12,8 +12,8 @@ La chaîne de traitement des données fonctionne ainsi :
 
 - Réception : L'ESP32 transmet les mesures  via une requête HTTP POST contenant un fichier au format texte brut JSON
 - Traduction : Un nœud Node-RED convertit ce texte JSON en un objet JavaScript
-- Séparation : Le code sépare les valeurs en 13 variables distinctes pour alimenter les graphiques
-- Stockage et Distribution : Les fonctions global.set() et global.get() gèrent une base de données temporaire en mémoire  répondre aux requêtes HTTP GET du site web (temps réel et historique)
+- Séparation : Le code sépare les valeurs en 13 variables  pour alimenter les graphiques
+- Stockage et Distribution : Les fonctions global.set() et global.get() gèrent une base de données temporaire en mémoire pour répondre aux requêtes HTTP GET du site web (temps réel, historique et graphique)
 
 Structure du Dépôt:
 
