@@ -1,3 +1,9 @@
+Météo Xplorer
+
+Version -- Juin 2026
+Autheur -- Clémentine TRANNOY
+Projet -- D2iP02 : Habib TALL, Jawaher TALL, Rémi TESSE, Clémentine TRANNOY, William SOUCHARD, Marguerite BLONDET
+
 Ce dépôt contient la configuration et le code du serveur de la station météo connectée mobile MeteoXplorer. Ce serveur fait le pont entre l'ESP32 (acquisition) et le site web (visualisation).
 
 Le serveur est développé avec Node-RED et hébergé sur la plateforme Render dans le Cloud pour assurer une disponibilité 24h/24. Il utilise un mécanisme de déploiement continu lié à ce dépôt GitHub.
